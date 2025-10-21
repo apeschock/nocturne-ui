@@ -43,7 +43,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
       header: "Navigation",
       subtext:
         "Turn the dial to browse your music. Try it now - scroll right to continue.",
-      continueType: "scroll",
+      continueType: "button",
     },
     {
       header: "Navigation",
@@ -67,7 +67,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
       header: "Controls",
       subtext:
         "Turn the dial in the Now Playing tab to adjust volume. Scroll right to continue.",
-      continueType: "scroll",
+      continueType: "button",
     },
     {
       header: "Controls",

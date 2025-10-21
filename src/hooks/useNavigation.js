@@ -172,197 +172,57 @@ export function useNavigation({
   }, [containerRef, handleScroll, enableScrollTracking]);
 
   const handleWheel = useCallback(
-    (e) => {
-      if (
-        !isActiveRef.current ||
-        !containerRef.current ||
-        !enableWheelNavigation
-      )
-        return;
+  (e) => {
+    if (!isActiveRef.current || !containerRef.current || !enableWheelNavigation)
+      return;
 
-      const items = vertical ? getTrackItems() : itemsRef.current;
-      if (items.length === 0) return;
+    e.preventDefault();
+    e.stopPropagation();
 
-      e.preventDefault();
-      e.stopPropagation();
+    const items = vertical ? getTrackItems() : itemsRef.current;
+    if (items.length === 0) return;
 
-      const now = Date.now();
+    const delta = vertical ? e.deltaY : e.deltaY || e.deltaX;
 
-      if (wheelThrottleRef.current && now - wheelThrottleRef.current < 60) {
-        isRapidScrollingRef.current = true;
+    wheelDeltaAccumulator.current += delta;
 
-        if (now - wheelThrottleRef.current < 15) {
-          return;
-        }
-      } else if (
-        wheelThrottleRef.current &&
-        now - wheelThrottleRef.current > 100
-      ) {
-        isRapidScrollingRef.current = false;
-      }
+    const threshold = 50; // lower for better sensitivity
+    if (Math.abs(wheelDeltaAccumulator.current) >= threshold) {
+      const direction = wheelDeltaAccumulator.current > 0 ? 1 : -1;
 
-      if (wheelDebounceRef.current) {
-        clearTimeout(wheelDebounceRef.current);
-      }
+      let newIndex = selectedIndexRef.current + direction;
+      newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
 
-      wheelDebounceRef.current = setTimeout(() => {
-        isRapidScrollingRef.current = false;
-      }, 100);
-
-      wheelThrottleRef.current = now;
-
-      lastActivityRef.current = now;
-
-      if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current);
-      }
-
-      if (!enableItemSelection) {
-        const container = containerRef.current;
-        const scrollAmount = vertical ? 100 : itemWidth + itemGap;
-        const direction = Math.sign(e.deltaX);
-
-        if (vertical) {
-          container.scrollBy({
-            top: scrollAmount * direction,
-            behavior: "smooth",
-          });
-        } else {
-          container.scrollBy({
-            left: scrollAmount * direction,
-            behavior: "smooth",
-          });
-        }
-        return;
-      }
-
-      if (selectedIndexRef.current === -1) {
-        const scaledItem = items.findIndex(
-          (item) =>
-            item.classList.contains("scale-105") ||
-            item.classList.contains("transition-transform"),
-        );
-
-        const delta = e.deltaX;
-        const startIndex =
-          scaledItem !== -1 ? scaledItem : delta > 0 ? 0 : items.length - 1;
-
-        setSelectedIndex(startIndex);
-        const targetItem = items[startIndex];
-
+      if (newIndex !== selectedIndexRef.current) {
+        const targetItem = items[newIndex];
         if (targetItem) {
           items.forEach((item) => {
             item.classList.remove(
               "scale-105",
               "transition-transform",
               "duration-200",
-              "ease-out",
+              "ease-out"
             );
           });
-
           targetItem.classList.add(
             "scale-105",
             "transition-transform",
             "duration-200",
-            "ease-out",
+            "ease-out"
           );
-
-          onItemFocus(startIndex, targetItem);
-          scrollItemIntoView(targetItem);
-        }
-        return;
-      }
-
-      const deltaThreshold = 10;
-      if (Math.abs(e.deltaX) < deltaThreshold) {
-        return;
-      }
-
-      let newIndex = selectedIndexRef.current;
-      const maxIndex = items.length - 1;
-
-      if (e.deltaX > 0) {
-        if (selectedIndexRef.current < maxIndex) {
-          newIndex = selectedIndexRef.current + 1;
-        }
-      } else if (e.deltaX < 0) {
-        if (selectedIndexRef.current > 0) {
-          newIndex = selectedIndexRef.current - 1;
-        }
-      }
-
-      if (newIndex !== selectedIndexRef.current) {
-        const targetItem = items[newIndex];
-        if (targetItem) {
-          requestAnimationFrame(() => {
-            items.forEach((item) => {
-              item.classList.remove(
-                "scale-105",
-                "transition-transform",
-                "duration-200",
-                "ease-out",
-              );
-            });
-
-            targetItem.classList.add(
-              "scale-105",
-              "transition-transform",
-              "duration-200",
-              "ease-out",
-            );
-          });
 
           setSelectedIndex(newIndex);
           onItemFocus(newIndex, targetItem);
           scrollItemIntoView(targetItem);
         }
-      } else if (selectedIndexRef.current === maxIndex && e.deltaX > 0) {
-        const lastItem = items[maxIndex];
-        if (lastItem) {
-          requestAnimationFrame(() => {
-            lastItem.classList.add(
-              "scale-105",
-              "transition-transform",
-              "duration-200",
-              "ease-out",
-            );
-          });
-        }
       }
 
-      if (enableItemSelection) {
-        inactivityTimeoutRef.current = setTimeout(() => {
-          const scaledItemIndex = items.findIndex((item) =>
-            item.classList?.contains("scale-105"),
-          );
+      wheelDeltaAccumulator.current = 0;
+    }
+  },
+  [getTrackItems, onItemFocus, scrollItemIntoView, vertical]
+);
 
-          if (scaledItemIndex !== -1) {
-            const scaledItem = items[scaledItemIndex];
-            scaledItem.classList.add(
-              "transition-transform",
-              "duration-200",
-              "ease-out",
-            );
-            scaledItem.classList.remove("scale-105");
-          }
-
-          setSelectedIndex(-1);
-        }, inactivityTimeout);
-      }
-    },
-    [
-      selectedIndex,
-      enableWheelNavigation,
-      enableItemSelection,
-      inactivityTimeout,
-      itemWidth,
-      itemGap,
-      scrollItemIntoView,
-      onItemFocus,
-      vertical,
-      getTrackItems,
-    ],
-  );
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -715,7 +575,7 @@ export function useNavigation({
   useEffect(() => {
     selectedIndexRef.current = selectedIndex;
   }, [selectedIndex]);
-
+  
   return {
     selectedIndex,
     isUserScrolling,

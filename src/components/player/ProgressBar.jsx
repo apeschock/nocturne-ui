@@ -26,12 +26,12 @@ const ProgressBar = ({
     const handleWheel = (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const delta = event.deltaX;
-      const step = 1.5;
+      const delta = event.deltaY || event.deltaX || event.wheelDelta || 0;
+      const direction = delta > 0 ? -1 : 1;
 
       setScrubbingProgress((prev) => {
-        const nextValue = (prev ?? progress) + (delta > 0 ? step : -step);
-        return Math.max(0, Math.min(100, nextValue));
+        const next = (prev ?? progress) + direction * 1.5;
+        return Math.max(0, Math.min(100, next));
       });
     };
 

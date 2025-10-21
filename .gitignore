@@ -137,3 +137,5 @@ dist
 
 # macOS
 .DS_Store
+bun.lockb
+package-lock.json
