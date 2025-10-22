@@ -802,9 +802,9 @@ export default function Home({
 
   return (
     <div className="relative min-h-screen">
-      <div className="relative z-10 grid grid-cols-[2.2fr_3fr] fadeIn-animation">
+      <div className="relative z-10 flex fadeIn-animation">
         <div
-          className="h-screen overflow-y-auto pb-12 pl-8 relative scroll-container scroll-smooth"
+          className="h-screen overflow-y-auto pb-12 pl-8 pr-10 relative scroll-container scroll-smooth"
           style={{ willChange: "transform" }}
         >
           <Sidebar
@@ -813,7 +813,7 @@ export default function Home({
           />
         </div>
 
-        <div className="h-screen overflow-y-auto">{renderContent()}</div>
+        <div className="h-screen flex-1 overflow-y-auto">{renderContent()}</div>
       </div>
 
       {showDonationModal && (

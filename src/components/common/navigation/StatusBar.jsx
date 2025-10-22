@@ -97,7 +97,7 @@ export default function StatusBar() {
 
   return (
     <div
-      className={`flex justify-between w-full mb-6 pr-10 ${
+      className={`flex justify-between w-full mb-6 ${
         isFourDigits ? "pl-0.5" : "pl-2"
       } items-start`}
     >
@@ -107,7 +107,7 @@ export default function StatusBar() {
       >
         {currentTime}
       </div>
-      <div className="flex gap-2.5 h-10" style={{ marginTop: "-10px" }}>
+      <div className="flex h-10" style={{ marginTop: "-10px" }}>
         {currentNetwork && isConnectorAvailable ? (
           getWiFiIcon()
         ) : showBluetoothInfo ? (
