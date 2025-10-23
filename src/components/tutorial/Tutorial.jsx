@@ -43,7 +43,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
       header: "Navigation",
       subtext:
         "Turn the dial to browse your music. Try it now - scroll right to continue.",
-      continueType: "button",
+      continueType: "scroll",
     },
     {
       header: "Navigation",
@@ -67,7 +67,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
       header: "Controls",
       subtext:
         "Turn the dial in the Now Playing tab to adjust volume. Scroll right to continue.",
-      continueType: "button",
+      continueType: "scroll",
     },
     {
       header: "Controls",
@@ -270,7 +270,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
     const handleWheel = (event) => {
       if (
         screens[currentScreen].continueType === "scroll" &&
-        event.deltaX > 0
+        (event.deltaY ?? deltaX) > 0
       ) {
         event.preventDefault();
         event.stopPropagation();
