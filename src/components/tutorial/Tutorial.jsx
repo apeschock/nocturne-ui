@@ -270,7 +270,7 @@ const Tutorial = ({ onComplete, onStepChange }) => {
     const handleWheel = (event) => {
       if (
         screens[currentScreen].continueType === "scroll" &&
-        (event.deltaY ?? deltaX) > 0
+        (event.deltaX || event.deltaY) > 0
       ) {
         event.preventDefault();
         event.stopPropagation();
