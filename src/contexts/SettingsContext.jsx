@@ -24,6 +24,7 @@ export function SettingsProvider({ children }) {
     ),
     lyricsMenuEnabled: getDefaultSettingValue("lyricsMenuEnabled", true),
     elapsedTimeEnabled: getDefaultSettingValue("elapsedTimeEnabled", false),
+    autoLockType: getDefaultSettingValue("autoLockType", "disabled"),
     remainingTimeEnabled: getDefaultSettingValue("remainingTimeEnabled", false),
     showStatusBar: getDefaultSettingValue("showStatusBar", true),
     startWithNowPlaying: getDefaultSettingValue("startWithNowPlaying", false),
@@ -41,9 +42,11 @@ export function SettingsProvider({ children }) {
 
   const updateSetting = (key, value) => {
     const newSettings = { ...settings };
+    debugger;
 
     const updateLocalStorage = (updates) => {
       Object.entries(updates).forEach(([settingKey, settingValue]) => {
+        debugger;
         newSettings[settingKey] = settingValue;
         localStorage.setItem(settingKey, settingValue.toString());
       });

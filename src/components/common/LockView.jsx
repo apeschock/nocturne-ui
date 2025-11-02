@@ -3,15 +3,18 @@ import { useCurrentTime } from "../../hooks/useCurrentTime";
 import { useAuth } from "../../hooks/useAuth";
 import { useSpotifyPlayerControls } from "../../hooks/useSpotifyPlayerControls";
 import { useGestureControls } from "../../hooks/useGestureControls";
+import { useAutomaticLock } from "../../hooks/useAutomaticLock";
 
 export default function LockView({
   onClose,
   currentPlayback,
   refreshPlaybackState,
+  setActiveSection
 }) {
   const { currentTime } = useCurrentTime();
   const containerRef = useRef(null);
   const { accessToken } = useAuth();
+  const prevPlaybackState = useRef(null);
   const { playTrack, pausePlayback, skipToNext, skipToPrevious } =
     useSpotifyPlayerControls(accessToken);
 
@@ -31,6 +34,7 @@ export default function LockView({
       if (ok && refreshPlaybackState) {
         setTimeout(() => refreshPlaybackState(true), 300);
       }
+      setActiveSection("nowPlaying")
       return;
     }
   }, [
@@ -56,6 +60,11 @@ export default function LockView({
       }
     },
     isActive: true,
+  });
+  
+  useAutomaticLock({
+    setActiveSection: setActiveSection,
+    currentPlayback: currentPlayback
   });
 
   useEffect(() => {

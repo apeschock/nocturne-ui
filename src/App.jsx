@@ -1016,6 +1016,7 @@ function App() {
         onNavigateToArtist={handleNavigateToArtistFromNowPlaying}
         onNavigateToAlbum={handleNavigateToAlbumFromNowPlaying}
         setIgnoreNextRelease={setIgnoreNextRelease}
+        setActiveSection={setActiveSection}
       />
     );
   } else if (activeSection === "lock") {
@@ -1024,6 +1025,7 @@ function App() {
         currentPlayback={currentPlayback}
         refreshPlaybackState={refreshPlaybackState}
         onClose={() => setActiveSection("recents")}
+        setActiveSection={setActiveSection}
       />
     );
   } else if (viewingContent) {

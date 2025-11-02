@@ -164,6 +164,18 @@ const settingsStructure = {
         storageKey: "elapsedTimeEnabled",
         defaultValue: false,
       },
+      {
+        id: "auto-lock-unlock",
+        title: "Auto Lock/Unlock",
+        type: "listbox",
+        options: [{display: "Off", value: "disabled"},
+          {display: "Play/Pause", value: "is_playing"},
+          {display: "Player Active", value: "is_active"}
+        ],
+        description: "Automatically lock and unlock when the selected state changes.",
+        storageKey: "autoLockType",
+        defaultValue: "Off",
+      },
     ],
   },
   account: {
@@ -947,6 +959,40 @@ export default function Settings({
             <p className="pt-4 text-[28px] font-[560] text-white/60 max-w-[380px] tracking-tight">
               {item.description}
             </p>
+          </div>
+        );
+      case "listbox":
+        return (
+          <div>
+            <label className="text-[32px] font-[580] text-white tracking-tight">
+              {item.title}
+            </label>
+            <p className="pb-4 text-[28px] font-[560] text-white/60 max-w-[380px] tracking-tight">
+              {item.description}
+            </p>
+            <Listbox
+              value={eval("settings." + item.storageKey)}
+              onChange={(val) => {
+                updateSetting(item.storageKey, val);
+              }}
+            >
+              <div className="relative w-96">
+                <ListboxButton className="w-full bg-white/10 border border-white/10 rounded-[14px] px-5 py-4 text-white text-[24px] text-left hover:bg-white/15 focus:outline-none">
+                  {item.options.find(x => x.value == settings[item.storageKey])?.display ?? "Select"}
+                </ListboxButton>
+                <ListboxOptions className="absolute z-10 mt-2 max-h-72 w-full overflow-auto rounded-[14px] bg-[#1c1c1c] border border-white/10 shadow-lg focus:outline-none custom-scrollbar-hide">
+                  {item.options.map((c) => (
+                    <ListboxOption
+                      key={c.display}
+                      value={c.value}
+                      className="cursor-pointer select-none px-5 py-3 text-[22px] text-white/90 data-[focus]:bg-white/10 data-[focus]:text-white"
+                    >
+                      {c.display}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
           </div>
         );
       case "sponsors":

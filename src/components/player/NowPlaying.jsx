@@ -12,6 +12,7 @@ import { useLyrics } from "../../hooks/useLyrics";
 import { useGestureControls } from "../../hooks/useGestureControls";
 import { useElapsedTime } from "../../hooks/useElapsedTime";
 import { useButtonMapping } from "../../hooks/useButtonMapping";
+import { useAutomaticLock } from "../../hooks/useAutomaticLock";
 import ButtonMappingOverlay from "../common/overlays/ButtonMappingOverlay";
 import ProgressBar from "./ProgressBar";
 import ScrollingText from "../common/ScrollingText";
@@ -46,6 +47,7 @@ export default function NowPlaying({
   onNavigateToArtist,
   onNavigateToAlbum,
   setIgnoreNextRelease,
+  setActiveSection,
 }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isCheckingLike, setIsCheckingLike] = useState(false);
@@ -472,6 +474,11 @@ export default function NowPlaying({
       }
     },
     isActive: true,
+  });
+
+  useAutomaticLock({
+    setActiveSection: setActiveSection,
+    currentPlayback: currentPlayback
   });
 
   const {
