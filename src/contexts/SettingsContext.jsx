@@ -2,7 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 
 const getDefaultSettingValue = (storageKey, defaultValue) => {
   const storedValue = localStorage.getItem(storageKey);
-  return storedValue !== null ? storedValue === "true" : defaultValue;
+  if(storedValue === null)
+    return defaultValue;
+  else if (storedValue === "true" || storedValue === "false")
+    return storedValue === "true";
+  else
+    return storedValue;
 };
 
 const SettingsContext = createContext();
@@ -42,11 +47,9 @@ export function SettingsProvider({ children }) {
 
   const updateSetting = (key, value) => {
     const newSettings = { ...settings };
-    debugger;
 
     const updateLocalStorage = (updates) => {
       Object.entries(updates).forEach(([settingKey, settingValue]) => {
-        debugger;
         newSettings[settingKey] = settingValue;
         localStorage.setItem(settingKey, settingValue.toString());
       });

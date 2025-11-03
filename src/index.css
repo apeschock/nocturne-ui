@@ -29,7 +29,7 @@ body {
 
 * {
   user-select: none;
-  cursor: none !important;
+  cursor: auto !important;
 }
 
 body {

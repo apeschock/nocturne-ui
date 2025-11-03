@@ -170,7 +170,7 @@ const settingsStructure = {
         type: "listbox",
         options: [{display: "Off", value: "disabled"},
           {display: "Play/Pause", value: "is_playing"},
-          {display: "Player Active", value: "is_active"}
+          {display: "No Active Player", value: "is_active"}
         ],
         description: "Automatically lock and unlock when the selected state changes.",
         storageKey: "autoLockType",
