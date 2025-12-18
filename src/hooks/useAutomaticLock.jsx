@@ -13,7 +13,6 @@ export function useAutomaticLock({
     }
     
     useEffect(() => {
-        debugger;
         if(!settings.autoLockType == "disabled")
             return;
 

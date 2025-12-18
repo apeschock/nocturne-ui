@@ -661,6 +661,36 @@ function App() {
     setShowConnectorModal,
   };
 
+  const setOverrideStartNavigation = (currentPlayback) => {
+    const startWithNowPlaying = localStorage.getItem("startWithNowPlaying") === "true"
+    const autoLockState = localStorage.getItem("autoLockType");
+    if(startWithNowPlaying){
+      if(autoLockState == "disabled")
+        setActiveSection("nowPlaying");
+      else if (autoLockState == "is_playing"){
+        if(currentPlayback?.is_playing)
+          setActiveSection("nowPlaying");
+        else
+          setActiveSection("lock");
+      }
+      else if (autoLockState == "is_active"){
+        if(currentPlayback)
+          setActiveSection("nowPlaying");
+        else
+          setActiveSection("lock");
+      }
+    }
+  }
+
+  const [isLoadingPlayer, setLoadingPlayer] = useState(true);
+
+  useEffect(() => {
+    if(!isLoadingPlayer)
+      return;
+    setLoadingPlayer(isLoading.player);
+    setOverrideStartNavigation(currentPlayback);
+  }, [currentPlayback]);
+
   useEffect(() => {
     if (isAuthenticated) {
       const handleNetworkRestored = () => {
@@ -687,16 +717,8 @@ function App() {
     if (isAuthenticated) {
       const hasSeenTutorial =
         localStorage.getItem("hasSeenTutorial") === "true";
-      if (hasSeenTutorial) {
-        setShowTutorial(false);
-        const shouldStartWithNowPlaying =
-          localStorage.getItem("startWithNowPlaying") === "true";
-        if (shouldStartWithNowPlaying) {
-          setActiveSection("nowPlaying");
-        }
-      } else {
-        setShowTutorial(true);
-      }
+      setShowTutorial(!hasSeenTutorial);
+      setOverrideStartNavigation();
     }
   }, [isAuthenticated, setActiveSection]);
 
@@ -881,13 +903,7 @@ function App() {
     setShowTutorial(false);
     setCurrentTutorialStep(0);
     localStorage.setItem("hasSeenTutorial", "true");
-    const shouldStartWithNowPlaying =
-      localStorage.getItem("startWithNowPlaying") === "true";
-    if (shouldStartWithNowPlaying) {
-      setActiveSection("nowPlaying");
-    } else {
-      setActiveSection("recents");
-    }
+    setOverrideStartNavigation(currentPlayback)
   };
 
   const handleOpenContent = (id, type) => {
